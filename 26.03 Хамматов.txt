@@ -1,0 +1,185 @@
+1
+def check_password(password):
+    if len(password) <= 8:
+        return "error"
+
+    has_upper = any(char.isupper() for char in password)
+    has_lower = any(char.islower() for char in password)
+    has_digit = any(char.isdigit() for char in password)
+
+    if not (has_upper and has_lower and has_digit):
+        return "error"
+    
+    eng_layout = ["qwe", "asd", "zxc", "rty", "fgh", "vbn", "uio", "jkl", "tyu", "hjk", "bnm"]
+    rus_layout = ["йцу", "фыв", "ячс", "кен", "апр", "олдж", "гыщ", "щзх", "цук", "ывф", "ячм"]
+
+    lower_password = password.lower()
+    
+    for sequence in eng_layout + rus_layout:
+        for i in range(len(sequence) - 2):
+            if sequence[i:i + 3] in lower_password:
+                return "error"
+    
+    return "ok"
+
+password = input("Введите пароль: ")
+print(check_password(password))
+
+2
+class PasswordError(Exception):
+    pass
+
+class LengthError(PasswordError):
+    pass
+
+class LetterError(PasswordError):
+    pass
+
+class DigitError(PasswordError):
+    pass
+
+class SequenceError(PasswordError):
+    pass
+
+def check_password(password):
+    if len(password) < 9:
+        raise LengthError("Password length should be at least 9 characters")
+
+    has_upper = any(char.isupper() for char in password)
+    has_lower = any(char.islower() for char in password)
+    if not (has_upper and has_lower):
+        raise LetterError("Password must contain both uppercase and lowercase letters")
+    
+    if not any(char.isdigit() for char in password):
+        raise DigitError("Password must contain at least one digit")
+    
+    eng_layout = ["qwe", "asd", "zxc", "rty", "fgh", "vbn", "uio", "jkl", "tyu", "hjk", "bnm"]
+    rus_layout = ["йцу", "фыв", "ячс", "кен", "апр", "олдж", "гыщ", "щзх", "цук", "ывф", "ячм"]
+
+    lower_password = password.lower()
+
+    for sequence in eng_layout + rus_layout:
+        for i in range(len(sequence) - 2):
+            if sequence[i:i + 3] in lower_password:
+                raise SequenceError("Password contains forbidden sequences of consecutive keyboard letters")
+
+    return "ok"
+
+try:
+    password = input("Введите пароль: ")
+    result = check_password(password)
+    print(result)
+except PasswordError as e:
+    print("Ошибка:", e)
+
+3
+def check_password(password):
+    try:
+        assert len(password) >= 9, "Password must be at least 9 characters long"
+        
+        has_upper = any(char.isupper() for char in password)
+        has_lower = any(char.islower() for char in password)
+        assert has_upper and has_lower, "Password must contain both uppercase and lowercase letters"
+        
+        has_digit = any(char.isdigit() for char in password)
+        assert has_digit, "Password must contain at least one digit"
+        
+        eng_layout = ["qwe", "asd", "zxc", "rty", "fgh", "vbn", "uio", "jkl", "tyu", "hjk", "bnm"]
+        rus_layout = ["йцу", "фыв", "ячс", "кен", "апр", "олдж", "гыщ", "щзх", "цук", "ывф", "ячм"]
+
+        lower_password = password.lower()
+        
+        for sequence in eng_layout + rus_layout:
+            for i in range(len(sequence) - 2):
+                assert sequence[i:i + 3] not in lower_password, "Password contains forbidden sequence"
+
+        return "ok"
+
+    except AssertionError as e:
+        print("error:", e)
+        return "error"
+    except Exception as e:
+        print("Unexpected error:", e)
+        return "error"
+
+password = input("Введите пароль: ")
+print(check_password(password))
+
+4
+class PasswordError(Exception):
+    pass
+
+class LengthError(PasswordError):
+    pass
+
+class LetterError(PasswordError):
+    pass
+
+class DigitError(PasswordError):
+    pass
+
+class SequenceError(PasswordError):
+    pass
+
+def check_password(password):
+    if len(password) < 9:
+        raise LengthError("Password must be at least 9 characters long")
+
+    has_upper = any(char.isupper() for char in password)
+    has_lower = any(char.islower() for char in password)
+    if not (has_upper and has_lower):
+        raise LetterError("Password must contain both uppercase and lowercase letters")
+    
+    if not any(char.isdigit() for char in password):
+        raise DigitError("Password must contain at least one digit")
+    
+    eng_layout = ["qwe", "asd", "zxc", "rty", "fgh", "vbn", "uio", "jkl", "tyu", "hjk", "bnm"]
+    rus_layout = ["йцу", "фыв", "ячс", "кен", "апр", "олдж", "гыщ", "щзх", "цук", "ывф", "ячм"]
+
+    lower_password = password.lower()
+    
+    for sequence in eng_layout + rus_layout:
+        for i in range(len(sequence) - 2):
+            if sequence[i:i + 3] in lower_password:
+                raise SequenceError("Password contains forbidden sequence")
+
+    return "ok"
+
+while True:
+    try:
+        password = input("Введите новый пароль: ")
+
+        if password == "Ctrl+Break":
+            raise KeyboardInterrupt
+
+        result = check_password(password)
+        print(result)
+        break 
+
+    except PasswordError as e:
+        print(e.__class__.__name__)
+    except KeyboardInterrupt:
+        print("Bye-Bye")
+        break
+    except Exception as e:
+        print("Unexpected error:", e)
+        break
+
+5
+class DefaultList(list):
+    def __init__(self, *args, default_value=None):
+        super().__init__(*args)
+        self.default_value = default_value
+    
+    def __getitem__(self, index):
+        try:
+            return super().__getitem__(index)
+        except IndexError:
+            return self.default_value
+
+default_list = DefaultList([1, 2, 3, 4], default_value="Out of bounds")
+
+print(default_list[2])  # Вернет 3
+print(default_list[5])  # Вернет "Out of bounds"
+print(default_list[100])  # Вернет "Out of bounds"
+

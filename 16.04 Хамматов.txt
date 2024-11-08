@@ -1,0 +1,151 @@
+1
+import sys
+
+def main():
+    try:
+        if len(sys.argv) != 3:
+            print(0)
+            return
+        
+        num1 = int(sys.argv[1])
+        num2 = int(sys.argv[2])
+        print(num1 + num2)
+        
+    except (ValueError, TypeError):
+        print(0)
+
+if __name__ == "__main__":
+    main()
+
+2
+import sys
+
+def main():
+    try:
+        if len(sys.argv) == 1:
+            print("NO PARAMS")
+            return
+        
+        total = 0
+        sign = 1  # Начинаем с плюса для первого целого числа
+        
+        for arg in sys.argv[1:]:
+            try:
+                number = int(arg, 0)  
+                total += sign * number
+                sign *= -1  
+            except ValueError:
+                continue  
+        
+        print(total)
+    
+    except Exception as e:
+        print(e.__class__.__name__) 
+
+if __name__ == "__main__":
+    main()
+
+
+3
+import sys
+
+def main():
+    try:
+        if len(sys.argv) != 4:
+            raise ValueError("Неверное количество аргументов")
+
+        num1 = float(sys.argv[1])
+        num2 = float(sys.argv[2])
+        operator = sys.argv[3]
+
+        if operator == '+':
+            result = num1 + num2
+        elif operator == '-':
+            result = num1 - num2
+        elif operator == '*':
+            result = num1 * num2
+        elif operator == '/':
+            if num2 == 0:
+                raise ZeroDivisionError("Деление на ноль невозможно")
+            result = num1 / num2
+        elif operator == '^':
+            result = num1 ** num2
+        else:
+            raise ValueError("Некорректный оператор")
+
+        print(result)
+
+    except Exception as e:
+        print(e.__class__.__name__)  
+
+if __name__ == "__main__":
+    main()
+
+
+4
+import sys
+
+def main():
+    args = sys.argv[1:]
+    key_value_pairs = {}
+    sort_output = False
+
+    for arg in args:
+        if arg == "--sort":
+            sort_output = True  
+        elif "=" in arg:
+            key, value = arg.split("=", 1)  
+            key_value_pairs[key] = value
+
+    keys = sorted(key_value_pairs) if sort_output else key_value_pairs.keys()
+
+    for key in keys:
+        print(f"Key: {key}")
+        print(f"Value: {key_value_pairs[key]}")
+
+if __name__ == "__main__":
+    main()
+
+
+5
+import sys
+import os
+
+def main():
+    args = sys.argv[1:]
+
+    if len(args) == 0:
+        print("Ошибка: Не указан файл")
+        return
+    
+    file_name = args[0]
+    options = args[1:]
+
+    if not os.path.isfile(file_name):
+        print("Ошибка: Указан несуществующий файл")
+        return
+
+    try:
+        with open(file_name, 'r') as file:
+            lines = file.readlines()
+    except Exception as e:
+        print(f"Ошибка при чтении файла: {e}")
+        return
+
+    line_count = len(lines)
+    sorted_lines = sorted(lines) if '--sort' in options else lines
+    numbered = '--num' in options
+    count = '--count' in options
+
+    for i, line in enumerate(sorted_lines):
+        line = line.rstrip()  
+        if numbered:
+            print(f"{i + 1} {line}")
+        else:
+            print(line)
+
+    if count:
+        print(f"\nКоличество строк: {line_count}")
+
+if __name__ == "__main__":
+    main()

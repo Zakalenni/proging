@@ -1,0 +1,133 @@
+1
+def arithmetic_operation(operation):
+    if operation == '+':
+        return lambda x, y: x + y
+    elif operation == '-':
+        return lambda x, y: x - y
+    elif operation == '*':
+        return lambda x, y: x * y
+    elif operation == '/':
+        return lambda x, y: x / y if y != 0 else "Division by zero error"
+    else:
+        raise ValueError("Unsupported operation. Choose from '+', '-', '*', '/'.")
+
+
+add = arithmetic_operation('+')
+print(add(10, 5))  # Вывод: 15
+
+subtract = arithmetic_operation('-')
+print(subtract(10, 5))  # Вывод: 5
+
+multiply = arithmetic_operation('*')
+print(multiply(10, 5))  # Вывод: 50
+
+divide = arithmetic_operation('/')
+print(divide(10, 5))  # Вывод: 2.0
+print(divide(10, 0))  # Вывод: "Division by zero error"
+
+2
+def simple_map(transformation, values):
+    result = []
+    for value in values:
+        result.append(transformation(value))
+    return result
+
+
+values = [1, 2, 3, 4, 5]
+transformation = lambda x: x * 2  # Удваиваем каждый элемент
+print(simple_map(transformation, values))  # Вывод: [2, 4, 6, 8, 10]
+
+3
+
+one = 15  # Пример первого числа
+two = 29  # Пример второго числа
+
+
+def to_roman(num):
+    roman_numerals = {
+        1000: "M", 900: "CM", 500: "D", 400: "CD",
+        100: "C", 90: "XC", 50: "L", 40: "XL",
+        10: "X", 9: "IX", 5: "V", 4: "IV", 1: "I"
+    }
+    result = ""
+    for value, symbol in roman_numerals.items():
+        while num >= value:
+            result += symbol
+            num -= value
+    return result
+
+
+def roman():
+    global one, two, three
+    three = one + two
+
+
+    one_roman = to_roman(one)
+    two_roman = to_roman(two)
+    three_roman = to_roman(three)
+
+
+    print(f"{one_roman} + {two_roman} = {three_roman}")
+
+
+roman()  # Выводит: "XV + XXIX = XLIV" для one = 15 и two = 29
+
+4
+
+transaction_stats = {}
+
+def get_transactions(t):
+    global transaction_stats
+    
+    if t == "print_it":
+        for transaction_type, stats in transaction_stats.items():
+            print(stats["count"], transaction_type, stats["total_sum"])
+        return
+
+    try:
+        phone, rest = t.split('-', 1)
+        transaction_type, amount_str = rest.split(':', 1)
+
+        amount = int(amount_str)
+
+
+        if transaction_type not in transaction_stats:
+            transaction_stats[transaction_type] = {"count": 0, "total_sum": 0}
+        
+
+        transaction_stats[transaction_type]["count"] += 1
+        transaction_stats[transaction_type]["total_sum"] += amount
+
+    except ValueError:
+        print("Неверный формат транзакции")
+
+
+get_transactions("111111111-перевод:1000")
+get_transactions("222222222-оплата:1500")
+get_transactions("111111111-перевод:500")
+get_transactions("333333333-оплата:1000")
+get_transactions("print_it")
+
+5
+def same_by(characteristic, objects):
+    if not objects:
+        return True  # Пустой список считается совпадающим
+    
+
+    first_value = characteristic(objects[0])
+    
+
+    for obj in objects:
+        if characteristic(obj) != first_value:
+            return False
+    return True
+
+
+objects = [2, 4, 6, 8]
+print(same_by(lambda x: x % 2, objects))  # True, все числа четные
+
+objects = [2, 3, 6, 8]
+print(same_by(lambda x: x % 2, objects))  # False, не все числа четные
+
+# Пример с пустым списком
+print(same_by(lambda x: x % 2, []))  # True, пустой список

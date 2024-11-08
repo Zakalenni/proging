@@ -1,0 +1,415 @@
+1
+class Rectangle:
+    def __init__(self, x, y, w, h):
+        self.x = x  # Координата левого нижнего угла по оси x
+        self.y = y  # Координата левого нижнего угла по оси y
+        self.w = w  # Ширина прямоугольника
+        self.h = h  # Высота прямоугольника
+
+
+    def get_x(self):
+        return self.x
+
+
+    def get_y(self):
+        return self.y
+
+
+    def get_w(self):
+        return self.w
+
+    def get_h(self):
+        return self.h
+
+    def intersection(self, other):
+
+        x1 = max(self.x, other.x)  # Левый нижний угол по оси x
+        y1 = max(self.y, other.y)  # Левый нижний угол по оси y
+        x2 = min(self.x + self.w, other.x + other.w)  # Верхний правый угол по оси x
+        y2 = min(self.y + self.h, other.y + other.h)  # Верхний правый угол по оси y
+        
+
+        if x1 >= x2 or y1 >= y2:
+            return None
+        
+
+        return Rectangle(x1, y1, x2 - x1, y2 - y1)
+
+
+rect1 = Rectangle(0, 0, 10, 10)
+rect2 = Rectangle(10, 0, 10, 10)
+rect3 = rect1.intersection(rect2)
+
+if rect3 is None:
+    print('No intersection')
+else:
+    print(rect3.get_x(), rect3.get_y(), rect3.get_w(), rect3.get_h())
+
+2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
+class LeftParagraph:
+    def __init__(self, width):
+        self.width = width  # Ширина поля вывода
+        self.current_line = []  # Список слов текущего абзаца
+        self.current_length = 0  # Длина текущей строки
+
+    def add_word(self, word):
+
+        if self.current_length + len(word) + len(self.current_line) <= self.width:
+            # Добавляем слово в текущую строку
+            self.current_line.append(word)
+            self.current_length += len(word)
+        else:
+
+            print(" ".join(self.current_line))
+
+            self.current_line = [word]
+            self.current_length = len(word)
+
+    def end(self):
+
+        if self.current_line:
+            print(" ".join(self.current_line))
+
+
+class RightParagraph:
+    def __init__(self, width):
+        self.width = width  
+        self.current_line = []  
+        self.current_length = 0  
+
+    def add_word(self, word):
+        if self.current_length + len(word) + len(self.current_line) <= self.width:
+            self.current_line.append(word)
+            self.current_length += len(word)
+        else:
+            print(" ".join(self.current_line).rjust(self.width))
+            self.current_line = [word]
+            self.current_length = len(word)
+
+    def end(self):
+        if self.current_line:
+            print(" ".join(self.current_line).rjust(self.width))
+
+
+
+
+lp = LeftParagraph(8)
+lp.add_word('abc')
+lp.add_word('defg')
+lp.add_word('hi')
+lp.add_word('jklmnopq')
+lp.add_word('r')
+lp.add_word('stuv')
+
+lp.end()
+print()
+
+rp = RightParagraph(8)
+rp.add_word('abc')
+rp.add_word('defg')
+rp.add_word('hi')
+rp.add_word('jklmnopq')
+rp.add_word('r')
+rp.add_word('stuv')
+
+rp.end()
+
+333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
+class SeaMap:
+    def __init__(self):
+        self.map = [[None for _ in range(10)] for _ in range(10)]
+        self.visited = [[False for _ in range(10)] for _ in range(10)]
+
+    def shoot(self, row, col, result):
+        """
+        Метод для обработки выстрела.
+        - result: "miss" (промах), "hit" (попадание), "sink" (потопление)
+        """
+        if result == 'miss':
+            self.visited[row][col] = True
+        elif result == 'hit':
+            self.map[row][col] = 'hit'
+            self.visited[row][col] = True
+        elif result == 'sink':
+            self.map[row][col] = 'sink'
+            self.visited[row][col] = True
+            for dr in [-1, 0, 1]:
+                for dc in [-1, 0, 1]:
+                    nr, nc = row + dr, col + dc
+                    if 0 <= nr < 10 and 0 <= nc < 10:
+                        self.visited[nr][nc] = True
+
+    def cell(self, row, col):
+        """
+        Метод для проверки состояния клетки.
+        Возвращает:
+        - '.' если это возможно пустая клетка,
+        - '*' если здесь уже был выстрел,
+        - 'x' если был попадание.
+        """
+        if self.map[row][col] == 'hit':
+            return 'x'
+        if self.visited[row][col]:
+            return '*'
+        return '.'
+
+
+sm = SeaMap()
+sm.shoot(2, 0, 'sink')  # Потопить корабль
+sm.shoot(6, 9, 'hit')   # Попадание
+
+for row in range(10):
+    for col in range(10):
+        print(sm.cell(row, col), end='')
+    print()
+
+4444444444444444444444444444444444444444444444444444444444444444444444444444444444444444
+import math
+
+# Класс оружия
+class Weapon:
+    def __init__(self, name, damage, range):
+        self.name = name
+        self.damage = damage
+        self.range = range
+    
+    def hit(self, actor, target):
+        if not target.is_alive():
+            print("Враг уже повержен")
+            return
+        
+        dist = math.sqrt((actor.get_coords()[0] - target.get_coords()[0]) ** 2 +
+                         (actor.get_coords()[1] - target.get_coords()[1]) ** 2)
+        
+        if dist > self.range:
+            print(f"Враг слишком далеко для оружия {self.name}")
+        else:
+            print(f"Врагу нанесен урон оружием {self.name} в размере {self.damage}")
+            target.get_damage(self.damage)
+    
+    def __str__(self):
+        return self.name
+
+class BaseCharacter:
+    def __init__(self, pos_x, pos_y, hp):
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.hp = hp
+    
+    def move(self, delta_x, delta_y):
+        self.pos_x += delta_x
+        self.pos_y += delta_y
+    
+    def is_alive(self):
+        return self.hp > 0
+    
+    def get_damage(self, amount):
+        self.hp -= amount
+        if self.hp <= 0:
+            self.hp = 0
+    
+    def get_coords(self):
+        return (self.pos_x, self.pos_y)
+
+
+class BaseEnemy(BaseCharacter):
+    def __init__(self, pos_x, pos_y, weapon, hp):
+        super().__init__(pos_x, pos_y, hp)
+        self.weapon = weapon
+    
+    def hit(self, target):
+        if isinstance(target, MainHero):
+            self.weapon.hit(self, target)
+        else:
+            print("Могу ударить только Главного героя")
+    
+    def __str__(self):
+        return f"Враг на позиции ({self.pos_x}, {self.pos_y}) с оружием {self.weapon}"
+
+class MainHero(BaseCharacter):
+    def __init__(self, pos_x, pos_y, name, hp):
+        super().__init__(pos_x, pos_y, hp)
+        self.name = name
+        self.weapon_inventory = []
+        self.current_weapon_index = 0
+    
+    def hit(self, target):
+        if len(self.weapon_inventory) == 0:
+            print("Я безоружен")
+        else:
+            if isinstance(target, BaseEnemy):
+                self.weapon_inventory[self.current_weapon_index].hit(self, target)
+            else:
+                print("Могу ударить только Врага")
+    
+    def add_weapon(self, weapon):
+        if isinstance(weapon, Weapon):
+            self.weapon_inventory.append(weapon)
+            if len(self.weapon_inventory) == 1:
+                self.current_weapon_index = 0
+            print(f"Подобрал {weapon}")
+        else:
+            print("Это не оружие")
+    
+    def next_weapon(self):
+        if len(self.weapon_inventory) == 0:
+            print("Я безоружен")
+        elif len(self.weapon_inventory) == 1:
+            print("У меня только одно оружие")
+        else:
+            self.current_weapon_index = (self.current_weapon_index + 1) % len(self.weapon_inventory)
+            print(f"Сменил оружие на {self.weapon_inventory[self.current_weapon_index]}")
+    
+    def heal(self, amount):
+        self.hp += amount
+        if self.hp > 200:
+            self.hp = 200
+        print(f"Полечился, теперь здоровья {self.hp}")
+    
+    def __str__(self):
+        return f"Главный герой {self.name} на позиции ({self.pos_x}, {self.pos_y})"
+
+
+weapon1 = Weapon("Короткий меч", 5, 1)
+weapon2 = Weapon("Длинный меч", 7, 2)
+weapon3 = Weapon("Лук", 3, 10)
+weapon4 = Weapon("Лазерная орбитальная пушка", 1000, 1000)
+
+
+princess = BaseCharacter(100, 100, 100)
+archer = BaseEnemy(50, 50, weapon3, 100)
+armored_swordsman = BaseEnemy(10, 10, weapon2, 500)
+
+
+archer.hit(armored_swordsman)  # Могу ударить только Главного героя
+armored_swordsman.move(10, 10)  # Переместиться
+print(armored_swordsman.get_coords())  # (20, 20)
+
+
+main_hero = MainHero(0, 0, "Король Артур", 200)
+
+
+main_hero.hit(armored_swordsman)
+
+
+main_hero.next_weapon()
+
+
+main_hero.add_weapon(weapon1)
+main_hero.hit(armored_swordsman)
+
+
+main_hero.add_weapon(weapon4)
+main_hero.hit(armored_swordsman)
+
+
+main_hero.next_weapon()
+
+
+main_hero.hit(princess)
+
+
+main_hero.heal(50)
+
+55555555555555555555555555555555555555555555555555555555555555555555555555555555
+class MailServer:
+    def __init__(self, name):
+        self.name = name
+        self.users = {} 
+
+    def add_user(self, user):
+        if user not in self.users:
+            self.users[user] = []  
+        else:
+            print(f"Пользователь {user} уже существует на сервере {self.name}")
+
+    def receive_mail(self, user):
+        if user in self.users:
+            mail = self.users[user]
+            self.users[user] = []
+            return mail
+        else:
+            print(f"Пользователь {user} не найден на сервере {self.name}")
+            return []
+
+    def send_mail(self, user, message):
+        if user in self.users:
+            self.users[user].append(message)
+        else:
+            print(f"Пользователь {user} не найден на сервере {self.name}")
+
+
+class MailClient:
+    def __init__(self, server, user):
+        self.server = server
+        self.user = user
+        if user not in server.users:
+            server.add_user(user)
+
+    def receive_mail(self):
+        messages = self.server.receive_mail(self.user)
+        if messages:
+            print(f"Почта для {self.user} на сервере {self.server.name}:")
+            for msg in messages:
+                print(msg)
+        else:
+            print(f"Нет новых сообщений для {self.user}.")
+
+    def send_mail(self, mail_system, recipient_server_name, recipient_user, message):
+        if recipient_server_name in mail_system.servers:
+            recipient_server = mail_system.servers[recipient_server_name]
+            recipient_server.send_mail(recipient_user, message)
+            print(f"Сообщение отправлено пользователю {recipient_user} на сервер {recipient_server_name}.")
+        else:
+            print(f"Сервер {recipient_server_name} не существует.")
+
+
+class MailSystem:
+    def __init__(self):
+        self.servers = {}  # Словарь серверов
+
+    def add_server(self, server):
+        self.servers[server.name] = server
+
+    def get_server(self, server_name):
+        return self.servers.get(server_name, None)
+
+    def list_servers(self):
+        print("Список доступных серверов:")
+        for server_name in self.servers:
+            print(f"- {server_name}")
+
+
+
+
+mail_system = MailSystem()
+server1 = MailServer("Server1")
+server2 = MailServer("Server2")
+
+mail_system.add_server(server1)
+mail_system.add_server(server2)
+
+
+server1.add_user("user1")
+server1.add_user("user2")
+server2.add_user("user3")
+
+
+client1 = MailClient(server1, "user1")
+client2 = MailClient(server1, "user2")
+client3 = MailClient(server2, "user3")
+
+
+client1.send_mail(mail_system, "Server2", "user3", "Привет, user3!")
+client2.send_mail(mail_system, "Server1", "user1", "Привет, user1!")
+
+
+client3.receive_mail()  # Почта для user3
+client1.receive_mail()  # Почта для user1
+client2.receive_mail()  # Почта для user2
+
+
+mail_system.list_servers()
+
+
+client1.send_mail(mail_system, "Server3", "user1", "Это невозможно.")
